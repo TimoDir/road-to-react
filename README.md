@@ -1,4 +1,39 @@
-# Getting Started with Create React App
+# Road to React
+
+## Robin Wieruch book: Edition 2022
+
+### ROADMAP WHAT YOU'RE GOING TO BE LEARNING
+
+#### Introduction to React
+From project setup to understanding the fundamentals of JavaScript for React, we will cover everything to get you started in this new environment.
+
+
+#### Basics in React
+You will learn everything about React component composition, JSX, state management and props in React to build your first basic React application.
+
+
+#### Getting real with an API
+Handling real data from an API with React makes things more exciting. You will learn how to fetch data and how to display and interact with this data in your React application.
+
+
+#### Code Organization and Testing
+Besides you will get to know how to test your React components and how to organize them in your project.
+
+
+#### Advanced React Components
+Advanced concepts such as higher-order components and render prop components will be covered as well for giving you all the tools to create powerful abstractions.
+
+
+#### Advanced State Management
+Get to know all the pitfalls when it comes to state management in React. Learn how to lift state up and down and how to use the state management API of React.
+
+**Become an Expert in React**
+
+
+
+
+
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
