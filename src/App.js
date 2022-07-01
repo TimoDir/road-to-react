@@ -18,16 +18,9 @@ const dict = [{
   def3: 'That was life up until Thomas Edison revolutionized music consumption for the first time in history with the invention of the phonograph, a 10-inch, 78 RPM cylinder disc that could only contain about three minutes of music per side.',  
   title: 'Phonograph '}];
 
-function App() {
+function List(){
   return (
-    <div >
-      <h1>
-        {getTitle('Welcome to the dictionary')}
-      </h1>
-      <p>Just 3 defenition avaible now but more will come in the future.</p>
-      <label htmlFor='search'>Search: </label>
-      <input id='search' type='text' />
-      <article>
+    <article>
       {dict.map( function (word){
         return (<div>
           <h3>{word.title}</h3>
@@ -39,7 +32,20 @@ function App() {
         </div>);
         }
       )}
-      </article>
+    </article>
+  );
+}
+
+function App() {
+  return (
+    <div >
+      <h1>Welcome to the dictionary</h1>
+      <p>Just 3 defenition avaible now but more will come in the future.</p>
+      <label htmlFor='search'>Search: </label>
+      <input id='search' type='text' />
+
+      <List />
+
     </div>
   );
 }
