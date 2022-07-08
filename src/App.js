@@ -4,19 +4,32 @@ function List(props){
   return (
     <article>
       {props.list.map((word) =>{
-        return (<div key={word.id}>
-          <h3>{word.title}</h3>
-          <ul>
-            <li>{word.def1}</li>
-            <li>{word.def2}</li>
-            <li>{word.def3}</li>
-          </ul>
-        </div>);
+        return <Word key={word.objectID} info={word} />
         }
       )}
     </article>
   );
 };
+
+function Word(props){
+
+  const definitions=()=>{
+    const definition = [];
+    for (let index = 0; index < props.info.def.length; index++) {
+      definition.push((<li key={props.info.def.arrayID}>{props.info.def[index]}</li>))
+    }
+    return definition
+  };
+
+  return(
+    <div key={props.info.id}>
+    <h3>{props.info.title}</h3>
+    <ul>
+      {definitions()}
+    </ul>
+  </div>
+  );
+}
 
 function Search(){
   return(
@@ -29,19 +42,18 @@ function Search(){
 
 function App() {
   const dict = [{
-    def1: 'An error in chronology',
-    def2: 'A person or a thing that is chronologically out of place',
-    def3: 'The state or condition of being chronologically out of place', 
+    def:  ['An error in chronology.',
+          'A person or a thing that is chronologically out of place.',
+          'The state or condition of being chronologically out of place.'],
     id: 0,
     title: 'Anachronism'},
-    {def1: 'Disposed to seek revenge',
-    def2: 'Intended for or involving revenge',
-    def3: 'The state or condition of being chronologically out of place',
+    {def: ['Disposed to seek revenge.',
+          'Intended for or involving revenge.',
+          'The state or condition of being chronologically out of place.',],
     id: 1,
     title: 'Vindictive'},
-    {def1: 'An instrument for reproducing sounds by means of the vibration of a stylus or needle following a spiral groove on a revolving disc or cylinder',
-    def2: 'Voyager 1 and 2 took with them golden phonograph records with images and sounds meant to reflect human culture.',
-    def3: 'That was life up until Thomas Edison revolutionized music consumption for the first time in history with the invention of the phonograph, a 10-inch, 78 RPM cylinder disc that could only contain about three minutes of music per side.',  
+    {def: ['An instrument for reproducing sounds by means of the vibration of a stylus or needle following a spiral groove on a revolving disc or cylinder.',
+          'Voyager 1 and 2 took with them golden phonograph records with images and sounds meant to reflect human culture.',],
     id: 2,
     title: 'Phonograph '}];
 
