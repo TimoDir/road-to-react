@@ -1,9 +1,5 @@
 import * as React from 'react';
 
-function getTitle(title){
-  return title;
-};
-
 const dict = [{
   def1: 'An error in chronology',
   def2: 'A person or a thing that is chronologically out of place',
@@ -34,20 +30,29 @@ function List(){
       )}
     </article>
   );
-}
+};
+
+function Search(){
+  return(
+    <div>
+      <label htmlFor='search'>Search: </label>
+      <input id='search' type='text' />
+    </div>
+  );
+};
 
 function App() {
   return (
     <div >
       <h1>Welcome to the dictionary</h1>
       <p>Just 3 defenition avaible now but more will come in the future.</p>
-      <label htmlFor='search'>Search: </label>
-      <input id='search' type='text' />
+      
+      <Search/>
 
       <List />
 
     </div>
   );
-}
+};
 
 export default App;
