@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 
 function List(props){
   return (
@@ -32,13 +33,15 @@ function Word(props){
 }
 
 function Search(props){
+  //using object Destructuring to say searchTerm and onSearch are part of the object props
+  const {searchTerm, onSearch} = props;
   return(
     <div>
       <label htmlFor='search'>Search: </label>
       <input id='search' 
       type='text' 
-      value={props.searchTerm}
-      onChange={props.onSearch} /> 
+      value={searchTerm}
+      onChange={onSearch} /> {/*Like this we dont have to declare props.searchTerm or onSearch and it's more readable */}
       <p>Searching for <strong>{props.searchTerm}</strong></p>
     </div>
   );
@@ -66,7 +69,7 @@ function App() {
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
     };
-    // more consise and readable solution of the book who don't use a function but directely filter and includes array methode 
+
     const searchedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
   
   return (
