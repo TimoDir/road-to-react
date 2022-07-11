@@ -63,14 +63,8 @@ function App() {
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
     };
-
-    const search = (dict, inputValue) =>{
-      // We gonna look if the inputValue are inside the title
-      const dictFilter = dict.filter( Word => 
-        Word.title.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1 // indexOf method return -1 if the value we look is not inside the element
-        );
-      return dictFilter
-    }
+    // more consise and readable solution of the book who don't use a function but directely filter and includes array methode 
+    const searchedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
   
   return (
     <div >
@@ -78,9 +72,8 @@ function App() {
       <p>Just 3 defenition avaible now but more will come in the future.</p>
       
       <Search searchTerm={searchTerm} onSearch={handleSearch} />
-      
-      {/*using the new function to just display the filter dict by the searchTerm always actualise by Search component */}
-      <List list={search(dict, searchTerm)} /> 
+
+      <List list={searchedDict} /> 
 
     </div>
   );
