@@ -35,7 +35,7 @@ function Search(props){
   return(
     <div>
       <label htmlFor='search'>Search: </label>
-      <input id='search' type='text' onChange={props.onSearch} /> {/*taking the handle event as the props pass by the parent component (App)*/}
+      <input id='search' type='text' onChange={props.onSearch} /> 
       <p>Searching for <strong>{props.searchTerm}</strong></p>
     </div>
   );
@@ -57,12 +57,20 @@ function App() {
           'Voyager 1 and 2 took with them golden phonograph records with images and sounds meant to reflect human culture.',],
     id: 2,
     title: 'Phonograph '}];
-    // moving the searchTerm state inside App component directely
+    
     const [searchTerm, setSearchTerm] = React.useState('');
-    // using the callback function to set the searchTerm
+
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
     };
+
+    const search = (dict, inputValue) =>{
+      // We gonna look if the inputValue are inside the title
+      const dictFilter = dict.filter( Word => 
+        Word.title.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1 // indexOf method return -1 if the value we look is not inside the element
+        );
+      return dictFilter
+    }
   
   return (
     <div >
@@ -70,8 +78,9 @@ function App() {
       <p>Just 3 defenition avaible now but more will come in the future.</p>
       
       <Search searchTerm={searchTerm} onSearch={handleSearch} />
-
-      <List list={dict} />
+      
+      {/*using the new function to just display the filter dict by the searchTerm always actualise by Search component */}
+      <List list={search(dict, searchTerm)} /> 
 
     </div>
   );
