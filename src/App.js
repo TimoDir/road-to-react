@@ -31,22 +31,12 @@ function Word(props){
   );
 }
 
-// adding a props parameter for handeling the callback function
 function Search(props){
-  const [searchTerm, setSearchTerm] = React.useState('');
-
-  const handleChange = (event) =>{
-    // setting the value of searchTerm
-    setSearchTerm(event.target.value);
-    //using the props of Search to callBack the new value of searchTerm
-    props.onSearch(event);
-  };
-
   return(
     <div>
       <label htmlFor='search'>Search: </label>
-      <input id='search' type='text' onChange={handleChange} />
-      <p>Searching for <strong>{searchTerm}</strong></p>
+      <input id='search' type='text' onChange={props.onSearch} /> {/*taking the handle event as the props pass by the parent component (App)*/}
+      <p>Searching for <strong>{props.searchTerm}</strong></p>
     </div>
   );
 };
@@ -67,10 +57,11 @@ function App() {
           'Voyager 1 and 2 took with them golden phonograph records with images and sounds meant to reflect human culture.',],
     id: 2,
     title: 'Phonograph '}];
-
-    // Callback function we will put in props of Search component
+    // moving the searchTerm state inside App component directely
+    const [searchTerm, setSearchTerm] = React.useState('');
+    // using the callback function to set the searchTerm
     const handleSearch = (event) =>{
-      console.log(event.target.value);
+      setSearchTerm(event.target.value);
     };
   
   return (
@@ -78,7 +69,7 @@ function App() {
       <h1>Welcome to the dictionary</h1>
       <p>Just 3 defenition avaible now but more will come in the future.</p>
       
-      <Search onSearch={handleSearch} />
+      <Search searchTerm={searchTerm} onSearch={handleSearch} />
 
       <List list={dict} />
 
