@@ -35,7 +35,10 @@ function Search(props){
   return(
     <div>
       <label htmlFor='search'>Search: </label>
-      <input id='search' type='text' onChange={props.onSearch} /> 
+      <input id='search' 
+      type='text' 
+      value={props.searchTerm}
+      onChange={props.onSearch} /> 
       <p>Searching for <strong>{props.searchTerm}</strong></p>
     </div>
   );
