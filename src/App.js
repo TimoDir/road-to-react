@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 
-function List(props){
+function List({list}){
   return (
     <article>
-      {props.list.map((word) =>{
+      {list.map((word) =>{
         return <Word key={word.objectID} info={word} />
         }
       )}
@@ -12,29 +12,28 @@ function List(props){
   );
 };
 
-function Word(props){
+function Word({info}){
 
   const definitions=()=>{
     const definition = [];
-    for (let index = 0; index < props.info.def.length; index++) {
-      definition.push((<li key={props.info.def.arrayID}>{props.info.def[index]}</li>))
+    for (let index = 0; index < info.def.length; index++) {
+      definition.push((<li key={info.def.arrayID}>{info.def[index]}</li>))
     }
     return definition
   };
 
   return(
-    <div key={props.info.id}>
-    <h3>{props.info.title}</h3>
+    <div key={info.id}>
+    <h3>{info.title}</h3>
     <ul>
       {definitions()}
     </ul>
   </div>
   );
 }
-
-function Search(props){
-  //using object Destructuring to say searchTerm and onSearch are part of the object props
-  const {searchTerm, onSearch} = props;
+//like this we don't have to pass by the props container and directely select what needed
+function Search({searchTerm, onSearch}){
+  //const {searchTerm, onSearch} = props; it's the same thing but we dont declare props anymore readability ++
   return(
     <div>
       <label htmlFor='search'>Search: </label>
@@ -42,7 +41,7 @@ function Search(props){
       type='text' 
       value={searchTerm}
       onChange={onSearch} /> {/*Like this we dont have to declare props.searchTerm or onSearch and it's more readable */}
-      <p>Searching for <strong>{props.searchTerm}</strong></p>
+      <p>Searching for <strong>{searchTerm}</strong></p>
     </div>
   );
 };
