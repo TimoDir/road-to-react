@@ -31,16 +31,15 @@ function Word({info}){
   </div>
   );
 }
-//like this we don't have to pass by the props container and directely select what needed
+
 function Search({searchTerm, onSearch}){
-  //const {searchTerm, onSearch} = props; it's the same thing but we dont declare props anymore readability ++
   return(
     <div>
       <label htmlFor='search'>Search: </label>
       <input id='search' 
       type='text' 
       value={searchTerm}
-      onChange={onSearch} /> {/*Like this we dont have to declare props.searchTerm or onSearch and it's more readable */}
+      onChange={onSearch} />
       <p>Searching for <strong>{searchTerm}</strong></p>
     </div>
   );
@@ -63,7 +62,11 @@ function App() {
     id: 2,
     title: 'Phonograph '}];
     
-    const [searchTerm, setSearchTerm] = React.useState('');
+    const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('search') || '');
+
+    React.useEffect(()=>{
+      localStorage.setItem('search', searchTerm) // create an item 'search' we will have the value of searchTerm everytime useEffect function will get triger uptade the value
+    }, [searchTerm]); // and that whenever searchTerm will change
 
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
