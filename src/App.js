@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { createPortal } from 'react-dom';
 
 function List({list}){
   return (
@@ -34,24 +33,23 @@ function Word({info}){
 
 function Search({searchTerm, onSearch}){
   return(
-    <div>
+    <> {/* Replace the div component per a React fragment <> is the refractoring of <React.Fragment> is an helper 'elements'. */}
       <label htmlFor='search'>Search: </label>
       <input id='search' 
       type='text' 
       value={searchTerm}
       onChange={onSearch} />
       <p>Searching for <strong>{searchTerm}</strong></p>
-    </div>
+    </>
   );
 };
-// creation of the custom Hook 
-const useStorageState = (key, initialState) =>{ // utilisation of the key and initialeState parameter to have a reusability of our Hook
-  // value and setValue will be rename by calling the hook
+
+const useStorageState = (key, initialState) =>{
   const [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
   
   React.useEffect(()=>{
     localStorage.setItem(key, value)
-  }, [value, key]); // because the key it's an outside element he can change and create probleme so we store the change every time the key change too
+  }, [value, key]);
 
   return [value, setValue];
 };
@@ -72,7 +70,7 @@ function App() {
           'Voyager 1 and 2 took with them golden phonograph records with images and sounds meant to reflect human culture.',],
     id: 2,
     title: 'Phonograph '}];
-    // we use destructuring array to call our custom Hook and defined value and setValue as searchTerm and setSearchTerm
+
     const [searchTerm, setSearchTerm] = useStorageState('search', '');
     
     const handleSearch = (event) =>{
@@ -82,7 +80,7 @@ function App() {
     const searchedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
   
   return (
-    <div >
+    <>
       <h1>Welcome to the dictionary</h1>
       <p>Just 3 defenition avaible now but more will come in the future.</p>
       
@@ -90,7 +88,7 @@ function App() {
 
       <List list={searchedDict} /> 
 
-    </div>
+    </>
   );
 };
 
