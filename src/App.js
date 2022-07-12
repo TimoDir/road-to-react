@@ -31,15 +31,28 @@ function Word({info}){
   );
 }
 
-function Search({searchTerm, onSearch}){
+const InputWithLabel = ({id, label, type='text', value, onInputChange}) =>{
   return(
-    <> {/* Replace the div component per a React fragment <> is the refractoring of <React.Fragment> is an helper 'elements'. */}
-      <label htmlFor='search'>Search: </label>
-      <input id='search' 
-      type='text' 
-      value={searchTerm}
-      onChange={onSearch} />
-      <p>Searching for <strong>{searchTerm}</strong></p>
+    <>
+      <label htmlFor={label}>Search: </label>
+      <input
+      type={type} 
+      id={id} 
+      value={value}
+      onChange={onInputChange} />
+    </>
+  );
+};
+
+const Dropdown = ({label, options, value, onChange}) =>{
+  return(
+    <>
+      <label>
+        {label}
+        <select value={value} onChange={onChange}>
+          {options.map(option => (<option value={option.title}>{option.title}</option>) )}
+        </select>
+      </label>
     </>
   );
 };
@@ -72,22 +85,40 @@ function App() {
     title: 'Phonograph '}];
 
     const [searchTerm, setSearchTerm] = useStorageState('search', '');
+    const [dropTerm, setDropTerm] =useStorageState('drop', '');
     
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
     };
 
+    const handleDrop = (event) =>{
+      setDropTerm(event.target.value)
+    };
+
     const searchedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
+    const dropedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(dropTerm.toLocaleLowerCase()))
   
   return (
     <>
       <h1>Welcome to the dictionary</h1>
       <p>Just 3 defenition avaible now but more will come in the future.</p>
-      
-      <Search searchTerm={searchTerm} onSearch={handleSearch} />
+      <h2>Navigate with the searchbar</h2>
+      <InputWithLabel
+        id="search"
+        label='search'
+        value={searchTerm}
+        onInputChange={handleSearch}
+      />
+      <List list={searchedDict} />
 
-      <List list={searchedDict} /> 
-
+      <h2>Navigate with the dropdown</h2>
+      <Dropdown
+        label='Chose an definition :'
+        options={dict}
+        value={dropTerm}
+        onChange={handleDrop}
+      />
+      <List list={dropedDict} />
     </>
   );
 };
