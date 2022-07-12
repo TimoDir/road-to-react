@@ -31,10 +31,10 @@ function Word({info}){
   );
 }
 
-const InputWithLabel = ({id, label, type='text', value, onInputChange}) =>{
+const InputWithLabel = ({id, children, type='text', value, onInputChange}) =>{
   return(
     <>
-      <label htmlFor={label}>Search: </label>
+      <label htmlFor={id}>{children} </label>
       <input
       type={type} 
       id={id} 
@@ -105,15 +105,16 @@ function App() {
       <h2>Navigate with the searchbar</h2>
       <InputWithLabel
         id="search"
-        label='search'
         value={searchTerm}
         onInputChange={handleSearch}
-      />
+      >
+        <strong>Search : </strong>
+      </InputWithLabel>
       <List list={searchedDict} />
 
       <h2>Navigate with the dropdown</h2>
       <Dropdown
-        label='Chose an definition :'
+        label='Chose an definition : '
         options={dict}
         value={dropTerm}
         onChange={handleDrop}
