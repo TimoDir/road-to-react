@@ -44,6 +44,17 @@ function Search({searchTerm, onSearch}){
     </div>
   );
 };
+// creation of the custom Hook 
+const useStorageState = (key, initialState) =>{ // utilisation of the key and initialeState parameter to have a reusability of our Hook
+  // value and setValue will be rename by calling the hook
+  const [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
+  
+  React.useEffect(()=>{
+    localStorage.setItem(key, value)
+  }, [value, key]); // because the key it's an outside element he can change and create probleme so we store the change every time the key change too
+
+  return [value, setValue];
+};
 
 function App() {
   const dict = [{
@@ -61,13 +72,9 @@ function App() {
           'Voyager 1 and 2 took with them golden phonograph records with images and sounds meant to reflect human culture.',],
     id: 2,
     title: 'Phonograph '}];
+    // we use destructuring array to call our custom Hook and defined value and setValue as searchTerm and setSearchTerm
+    const [searchTerm, setSearchTerm] = useStorageState('search', '');
     
-    const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('search') || '');
-
-    React.useEffect(()=>{
-      localStorage.setItem('search', searchTerm) // create an item 'search' we will have the value of searchTerm everytime useEffect function will get triger uptade the value
-    }, [searchTerm]); // and that whenever searchTerm will change
-
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
     };
