@@ -31,15 +31,27 @@ function Word({info}){
   );
 }
 
-const InputWithLabel = ({id, children, type='text', value, onInputChange}) =>{
+const InputWithLabel = ({id, children, isFocused, type='text', value, onInputChange}) =>{
+  //Declare that inputRef is now an ref object inputRef = {current = *whatever we put inside the ()*}
+  const inputRef = React.useRef();
+
+  React.useEffect(()=>{
+    if(isFocused && inputRef.current){
+      //it will call the element to focus if isFocused is declare as a props and be True
+      inputRef.current.focus(); //So inputRef will be equal to {current = focus()} and calling the focus of an HTMLelement
+    }
+  }, [isFocused]) 
+
   return(
     <>
       <label htmlFor={id}>{children} </label>
       <input
-      type={type} 
-      id={id} 
-      value={value}
-      onChange={onInputChange} />
+        ref={inputRef} // depending of the ref object and so if isFocused is pass as a props it will triger the focus without rerender the component
+        type={type} 
+        id={id} 
+        value={value}
+        onChange={onInputChange} 
+      />
     </>
   );
 };
@@ -102,8 +114,10 @@ function App() {
     <>
       <h1>Welcome to the dictionary</h1>
       <p>Just 3 defenition avaible now but more will come in the future.</p>
+
       <h2>Navigate with the searchbar</h2>
       <InputWithLabel
+        isFocused
         id="search"
         value={searchTerm}
         onInputChange={handleSearch}
