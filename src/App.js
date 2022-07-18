@@ -1,17 +1,18 @@
 import * as React from 'react';
 
-function List({list}){
+function List({list, onRemoveDef}){
   return (
     <article>
       {list.map((word) =>{
-        return <Word key={word.objectID} info={word} />
+        console.log(word.id)
+        return <Word key={word.id} info={word} onRemoveDef={onRemoveDef} />
         }
       )}
     </article>
   );
 };
 
-function Word({info}){
+function Word({info , onRemoveDef}){
 
   const definitions=()=>{
     const definition = [];
@@ -21,24 +22,29 @@ function Word({info}){
     return definition
   };
 
+  const handleRemoveDict = () =>{
+    onRemoveDef(info);
+  };
+
   return(
     <div key={info.id}>
     <h3>{info.title}</h3>
     <ul>
       {definitions()}
     </ul>
+    <span>
+      <button type='button' onClick={handleRemoveDict}>Dismiss</button>
+    </span>
   </div>
   );
 }
 
 const InputWithLabel = ({id, children, isFocused, type='text', value, onInputChange}) =>{
-  //Declare that inputRef is now an ref object inputRef = {current = *whatever we put inside the ()*}
   const inputRef = React.useRef();
 
   React.useEffect(()=>{
     if(isFocused && inputRef.current){
-      //it will call the element to focus if isFocused is declare as a props and be True
-      inputRef.current.focus(); //So inputRef will be equal to {current = focus()} and calling the focus of an HTMLelement
+      inputRef.current.focus();
     }
   }, [isFocused]) 
 
@@ -46,7 +52,7 @@ const InputWithLabel = ({id, children, isFocused, type='text', value, onInputCha
     <>
       <label htmlFor={id}>{children} </label>
       <input
-        ref={inputRef} // depending of the ref object and so if isFocused is pass as a props it will triger the focus without rerender the component
+        ref={inputRef}
         type={type} 
         id={id} 
         value={value}
@@ -80,7 +86,7 @@ const useStorageState = (key, initialState) =>{
 };
 
 function App() {
-  const dict = [{
+  const dictionary = [{
     def:  ['An error in chronology.',
           'A person or a thing that is chronologically out of place.',
           'The state or condition of being chronologically out of place.'],
@@ -98,6 +104,7 @@ function App() {
 
     const [searchTerm, setSearchTerm] = useStorageState('search', '');
     const [dropTerm, setDropTerm] =useStorageState('drop', '');
+    const [dict, setDict] =  React.useState(dictionary); // creation of a state for the dictionnary
     
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
@@ -105,6 +112,11 @@ function App() {
 
     const handleDrop = (event) =>{
       setDropTerm(event.target.value)
+    };
+
+    const handleRemoveDict = (item) =>{
+      const newDict = dict.filter( def => item.id !== def.id); // the handle function will remove any item who don't meet this case
+      setDict(newDict);
     };
 
     const searchedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
@@ -124,7 +136,7 @@ function App() {
       >
         <strong>Search : </strong>
       </InputWithLabel>
-      <List list={searchedDict} />
+      <List list={searchedDict} onRemoveDef={handleRemoveDict} /> {/*we pass as a props the handle function */}
 
       <h2>Navigate with the dropdown</h2>
       <Dropdown
