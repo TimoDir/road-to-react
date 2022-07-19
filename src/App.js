@@ -85,26 +85,38 @@ const useStorageState = (key, initialState) =>{
   return [value, setValue];
 };
 
+const dictionary = [{
+  def:  ['An error in chronology.',
+        'A person or a thing that is chronologically out of place.',
+        'The state or condition of being chronologically out of place.'],
+  id: 0,
+  title: 'Anachronism'},
+  {def: ['Disposed to seek revenge.',
+        'Intended for or involving revenge.',
+        'The state or condition of being chronologically out of place.',],
+  id: 1,
+  title: 'Vindictive'},
+  {def: ['An instrument for reproducing sounds by means of the vibration of a stylus or needle following a spiral groove on a revolving disc or cylinder.',
+        'Voyager 1 and 2 took with them golden phonograph records with images and sounds meant to reflect human culture.',],
+  id: 2,
+  title: 'Phonograph '}];
+
+const getAsyncDict = () => new Promise (resolve => 
+  setTimeout(() => 
+  resolve({data: {dict: dictionary}}), 2000
+  ));
+
 function App() {
-  const dictionary = [{
-    def:  ['An error in chronology.',
-          'A person or a thing that is chronologically out of place.',
-          'The state or condition of being chronologically out of place.'],
-    id: 0,
-    title: 'Anachronism'},
-    {def: ['Disposed to seek revenge.',
-          'Intended for or involving revenge.',
-          'The state or condition of being chronologically out of place.',],
-    id: 1,
-    title: 'Vindictive'},
-    {def: ['An instrument for reproducing sounds by means of the vibration of a stylus or needle following a spiral groove on a revolving disc or cylinder.',
-          'Voyager 1 and 2 took with them golden phonograph records with images and sounds meant to reflect human culture.',],
-    id: 2,
-    title: 'Phonograph '}];
 
     const [searchTerm, setSearchTerm] = useStorageState('search', '');
     const [dropTerm, setDropTerm] =useStorageState('drop', '');
-    const [dict, setDict] =  React.useState(dictionary); // creation of a state for the dictionnary
+    const [dict, setDict] =  React.useState([]);
+
+    React.useEffect(()=>{
+      getAsyncDict().then(result =>{
+        setDict(result.data.dict);
+      })
+    }, []);
     
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
