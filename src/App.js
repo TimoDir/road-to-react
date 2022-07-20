@@ -103,7 +103,7 @@ const dictionary = [{
 
 const getAsyncDict = () => new Promise (resolve => 
   setTimeout(() => 
-  resolve({data: {dict: dictionary}}), 2000
+  resolve({data: {dict: dictionary}}), 1000
   ));
 
 function App() {
@@ -111,11 +111,16 @@ function App() {
     const [searchTerm, setSearchTerm] = useStorageState('search', '');
     const [dropTerm, setDropTerm] =useStorageState('drop', '');
     const [dict, setDict] =  React.useState([]);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [isError, setIsError]= React.useState(false);
 
-    React.useEffect(()=>{
+    React.useEffect(() =>{
+      setIsLoading(true);
+
       getAsyncDict().then(result =>{
         setDict(result.data.dict);
-      })
+        setIsLoading(false)
+      }).catch(()=> setIsError(true))
     }, []);
     
     const handleSearch = (event) =>{
@@ -133,7 +138,7 @@ function App() {
 
     const searchedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
     const dropedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(dropTerm.toLocaleLowerCase()))
-  
+    
   return (
     <>
       <h1>Welcome to the dictionary</h1>
@@ -148,7 +153,10 @@ function App() {
       >
         <strong>Search : </strong>
       </InputWithLabel>
-      <List list={searchedDict} onRemoveDef={handleRemoveDict} /> {/*we pass as a props the handle function */}
+      {isError && <p>Something went wrong ...</p>}
+      { isLoading ? (
+        <p>Loading ...</p>
+      ):(<List list={searchedDict} onRemoveDef={handleRemoveDict} />)}
 
       <h2>Navigate with the dropdown</h2>
       <Dropdown
@@ -157,7 +165,10 @@ function App() {
         value={dropTerm}
         onChange={handleDrop}
       />
-      <List list={dropedDict} />
+      {isError && <p>Something went wrong ...</p>}
+      { isLoading ? (
+        <p>Loading ...</p>
+      ):(<List list={dropedDict} />)}
     </>
   );
 };
