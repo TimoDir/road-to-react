@@ -106,11 +106,25 @@ const getAsyncDict = () => new Promise (resolve =>
   resolve({data: {dict: dictionary}}), 1000
   ));
 
+const dictReducer = (state, action) =>{
+  switch(action.type){
+    case 'SET_DICT':
+      return action.payload;
+    case 'REMOVE_DICT':
+      return state.filter( def => action.payload.id !== def.id);
+    default:
+      throw new Error();
+  };
+};
+
 function App() {
 
     const [searchTerm, setSearchTerm] = useStorageState('search', '');
     const [dropTerm, setDropTerm] =useStorageState('drop', '');
-    const [dict, setDict] =  React.useState([]);
+    const [dict, dispatchDict] =  React.useReducer(
+      dictReducer,
+      []
+    );
     const [isLoading, setIsLoading] = React.useState(false);
     const [isError, setIsError]= React.useState(false);
 
@@ -118,7 +132,10 @@ function App() {
       setIsLoading(true);
 
       getAsyncDict().then(result =>{
-        setDict(result.data.dict);
+        dispatchDict({
+          type: 'SET_DICT',
+          payload: result.data.dict,
+        });
         setIsLoading(false)
       }).catch(()=> setIsError(true))
     }, []);
@@ -132,8 +149,10 @@ function App() {
     };
 
     const handleRemoveDict = (item) =>{
-      const newDict = dict.filter( def => item.id !== def.id); // the handle function will remove any item who don't meet this case
-      setDict(newDict);
+      dispatchDict({
+        type: 'REMOVE_DICT',
+        payload: item,
+      });
     };
 
     const searchedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
