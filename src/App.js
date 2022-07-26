@@ -202,7 +202,7 @@ function App() {
       <h2>Navigate with the dropdown</h2>
       <Dropdown
         label='Chose an definition : '
-        options={dict}
+        options={dict.data}
         value={dropTerm}
         onChange={handleDrop}
       />
