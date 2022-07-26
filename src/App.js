@@ -206,8 +206,8 @@ function App() {
         value={dropTerm}
         onChange={handleDrop}
       />
-      {isError && <p>Something went wrong ...</p>}
-      { isLoading ? (
+      {dict.isError && <p>Something went wrong ...</p>}
+      { dict.isLoading ? (
         <p>Loading ...</p>
       ):(<List list={dropedDict} />)}
     </>
