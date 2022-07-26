@@ -101,20 +101,43 @@ const dictionary = [{
   id: 2,
   title: 'Phonograph '}];
 
-const getAsyncDict = () => new Promise (resolve => 
+const getAsyncDict = () => new Promise ((resolve, reject) =>
+  //setTimeout(reject, 1500)
   setTimeout(() => 
-  resolve({data: {dict: dictionary}}), 1000
-  ));
+  resolve({data: {dict: dictionary}}), 1000)
+  );
 
 const dictReducer = (state, action) =>{
   switch(action.type){
-    case 'SET_DICT':
-      return action.payload;
+    case 'LOADING_DICT':
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      }
+    case 'GET_DICT':
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload
+      };
+    case 'ERROR_FETCH':
+      return{
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
     case 'REMOVE_DICT':
-      return state.filter( def => action.payload.id !== def.id);
+      return {
+        ...state,
+        data: state.data.filter( 
+          (def) => action.payload.id !== def.id
+        ),
+      };
     default:
       throw new Error();
-  };
+  }
 };
 
 function App() {
@@ -123,21 +146,20 @@ function App() {
     const [dropTerm, setDropTerm] =useStorageState('drop', '');
     const [dict, dispatchDict] =  React.useReducer(
       dictReducer,
-      []
+      {data: [], isLoading: false, isError: false}
     );
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [isError, setIsError]= React.useState(false);
 
     React.useEffect(() =>{
-      setIsLoading(true);
+      dispatchDict({type:'LOADING_DICT'})
 
       getAsyncDict().then(result =>{
         dispatchDict({
-          type: 'SET_DICT',
+          type: 'GET_DICT',
           payload: result.data.dict,
         });
-        setIsLoading(false)
-      }).catch(()=> setIsError(true))
+      }).catch(()=>
+      dispatchDict({type:'ERROR_FETCH'})
+      );
     }, []);
     
     const handleSearch = (event) =>{
@@ -155,8 +177,8 @@ function App() {
       });
     };
 
-    const searchedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
-    const dropedDict = dict.filter(word => word.title.toLocaleLowerCase().includes(dropTerm.toLocaleLowerCase()))
+    const searchedDict = dict.data.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
+    const dropedDict = dict.data.filter(word => word.title.toLocaleLowerCase().includes(dropTerm.toLocaleLowerCase()))
     
   return (
     <>
@@ -172,8 +194,8 @@ function App() {
       >
         <strong>Search : </strong>
       </InputWithLabel>
-      {isError && <p>Something went wrong ...</p>}
-      { isLoading ? (
+      {dict.isError && <p>Something went wrong ...</p>}
+      { dict.isLoading ? (
         <p>Loading ...</p>
       ):(<List list={searchedDict} onRemoveDef={handleRemoveDict} />)}
 
