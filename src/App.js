@@ -101,11 +101,15 @@ const dictionary = [{
   id: 2,
   title: 'Phonograph '}];
 
-const getAsyncDict = () => new Promise ((resolve, reject) =>
-  //setTimeout(reject, 1500)
-  setTimeout(() => 
-  resolve({data: {dict: dictionary}}), 1000)
-  );
+const API_ENDPOINT = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+
+const options = {
+  method: 'GET',
+  headers: {
+    'Content-type': 'application/json',
+    'API': 'c48138b973a14d13a8f3dd40e6062015'
+  }
+};
 
 const dictReducer = (state, action) =>{
   switch(action.type){
@@ -142,7 +146,7 @@ const dictReducer = (state, action) =>{
 
 function App() {
 
-    const [searchTerm, setSearchTerm] = useStorageState('search', '');
+    const [searchTerm, setSearchTerm] = useStorageState('search', 'example');
     const [dropTerm, setDropTerm] =useStorageState('drop', '');
     const [dict, dispatchDict] =  React.useReducer(
       dictReducer,
@@ -152,12 +156,13 @@ function App() {
     React.useEffect(() =>{
       dispatchDict({type:'LOADING_DICT'})
 
-      getAsyncDict().then(result =>{
-        dispatchDict({
-          type: 'GET_DICT',
-          payload: result.data.dict,
-        });
-      }).catch(()=>
+      fetch(`${API_ENDPOINT}${searchTerm}`).then((response) =>
+        response.json()).then((result) => {
+          dispatchDict({
+            type: 'GET_DICT',
+            payload: result.data.dict,
+          });
+        }).catch(()=>
       dispatchDict({type:'ERROR_FETCH'})
       );
     }, []);
