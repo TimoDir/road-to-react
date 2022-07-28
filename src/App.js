@@ -151,12 +151,13 @@ function App() {
       dictReducer,
       {data: [], isLoading: false, isError: false}
     );
+    const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`)
 
     const handleFetchStories = React.useCallback(()=>{
       if (!searchTerm) return;
       dispatchDict({type:'LOADING_DICT'})
 
-      fetch(`${API_ENDPOINT}${searchTerm}`).then((response) =>
+      fetch(url).then((response) =>
         response.json()).then((result) =>{
           dispatchDict({
             type: 'GET_DICT',
@@ -165,7 +166,7 @@ function App() {
         }).catch(()=>
             dispatchDict({type:'ERROR_FETCH'})
           );
-    }, [searchTerm])
+    }, [url])
 
     React.useEffect(() =>{
       handleFetchStories()
@@ -174,6 +175,10 @@ function App() {
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
     };
+
+    const handleSearchSubmit = () =>{
+      setUrl(`${API_ENDPOINT}${searchTerm}`)
+    }
     /*
     const handleDrop = (event) =>{
       setDropTerm(event.target.value)
@@ -203,6 +208,12 @@ function App() {
       >
         <strong>Search : </strong>
       </InputWithLabel>
+      <button
+        type='button'
+        disabled={!searchTerm}
+        onClick={handleSearchSubmit}
+      >Submit</button>
+
       {dict.isError && <p>Something went wrong ...</p>}
       { dict.isLoading ? (
         <p>Loading ...</p>
