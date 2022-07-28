@@ -4,8 +4,7 @@ function List({list, onRemoveDef}){
   return (
     <article>
       {list.map((word) =>{
-        console.log(word.id)
-        return <Word key={word.id} info={word} onRemoveDef={onRemoveDef} />
+        return <Word key={word.license.name} info={word} onRemoveDef={onRemoveDef} />
         }
       )}
     </article>
@@ -15,11 +14,16 @@ function List({list, onRemoveDef}){
 function Word({info , onRemoveDef}){
 
   const definitions=()=>{
-    const definition = [];
-    for (let index = 0; index < info.def.length; index++) {
-      definition.push((<li key={info.def.arrayID}>{info.def[index]}</li>))
+    const word = [];
+    for (let i = 0; i < info.meanings.length; i++) {
+      word.push((<h4>{info.word} - {info.meanings[i].partOfSpeech}</h4>))
+      const def = []
+      for (let y = 0; y < info.meanings[i].definitions.length; y++) {
+        def.push((<li key={`${info.license.name}.${i}.${y}`}>{info.meanings[i].definitions[y].definition}</li>))
+      }
+      word.push(<ul key={`${info.license.name}.${i}`}>{def}</ul>)
     }
-    return definition
+    return word
   };
 
   const handleRemoveDict = () =>{
@@ -27,11 +31,11 @@ function Word({info , onRemoveDef}){
   };
 
   return(
-    <div key={info.id}>
-    <h3>{info.title}</h3>
-    <ul>
+    <div key={info.license.name}>
+    <h3>{info.word}</h3>
+    <>
       {definitions()}
-    </ul>
+    </>
     <span>
       <button type='button' onClick={handleRemoveDict}>Dismiss</button>
     </span>
@@ -61,7 +65,7 @@ const InputWithLabel = ({id, children, isFocused, type='text', value, onInputCha
     </>
   );
 };
-
+/*
 const Dropdown = ({label, options, value, onChange}) =>{
   return(
     <>
@@ -74,6 +78,7 @@ const Dropdown = ({label, options, value, onChange}) =>{
     </>
   );
 };
+*/
 
 const useStorageState = (key, initialState) =>{
   const [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
@@ -84,7 +89,7 @@ const useStorageState = (key, initialState) =>{
 
   return [value, setValue];
 };
-
+/*
 const dictionary = [{
   def:  ['An error in chronology.',
         'A person or a thing that is chronologically out of place.',
@@ -100,16 +105,8 @@ const dictionary = [{
         'Voyager 1 and 2 took with them golden phonograph records with images and sounds meant to reflect human culture.',],
   id: 2,
   title: 'Phonograph '}];
-
+*/
 const API_ENDPOINT = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
-
-const options = {
-  method: 'GET',
-  headers: {
-    'Content-type': 'application/json',
-    'API': 'c48138b973a14d13a8f3dd40e6062015'
-  }
-};
 
 const dictReducer = (state, action) =>{
   switch(action.type){
@@ -146,8 +143,8 @@ const dictReducer = (state, action) =>{
 
 function App() {
 
-    const [searchTerm, setSearchTerm] = useStorageState('search', 'example');
-    const [dropTerm, setDropTerm] =useStorageState('drop', '');
+    const [searchTerm, setSearchTerm] = useStorageState('search', '');
+    //const [dropTerm, setDropTerm] =useStorageState('drop', '');
     const [dict, dispatchDict] =  React.useReducer(
       dictReducer,
       {data: [], isLoading: false, isError: false}
@@ -156,12 +153,12 @@ function App() {
     React.useEffect(() =>{
       dispatchDict({type:'LOADING_DICT'})
 
-      fetch(`${API_ENDPOINT}${searchTerm}`).then((response) =>
-        response.json()).then((result) => {
+      fetch(`${API_ENDPOINT}example`).then((response) =>
+        response.json()).then((result) =>{
           dispatchDict({
             type: 'GET_DICT',
-            payload: result.data.dict,
-          });
+            payload: dict.data = result,
+          })
         }).catch(()=>
       dispatchDict({type:'ERROR_FETCH'})
       );
@@ -170,11 +167,11 @@ function App() {
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
     };
-
+    /*
     const handleDrop = (event) =>{
       setDropTerm(event.target.value)
     };
-
+    */
     const handleRemoveDict = (item) =>{
       dispatchDict({
         type: 'REMOVE_DICT',
@@ -182,9 +179,9 @@ function App() {
       });
     };
 
-    const searchedDict = dict.data.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
-    const dropedDict = dict.data.filter(word => word.title.toLocaleLowerCase().includes(dropTerm.toLocaleLowerCase()))
-    
+    //const searchedDict = dict.data.filter(word => word.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
+    //const dropedDict = dict.data.filter(word => word.title.toLocaleLowerCase().includes(dropTerm.toLocaleLowerCase()))
+
   return (
     <>
       <h1>Welcome to the dictionary</h1>
@@ -202,9 +199,9 @@ function App() {
       {dict.isError && <p>Something went wrong ...</p>}
       { dict.isLoading ? (
         <p>Loading ...</p>
-      ):(<List list={searchedDict} onRemoveDef={handleRemoveDict} />)}
+      ):(<List list={dict.data} onRemoveDef={handleRemoveDict} />)}
 
-      <h2>Navigate with the dropdown</h2>
+      {/*<h2>Navigate with the dropdown</h2>
       <Dropdown
         label='Chose an definition : '
         options={dict.data}
@@ -214,7 +211,7 @@ function App() {
       {dict.isError && <p>Something went wrong ...</p>}
       { dict.isLoading ? (
         <p>Loading ...</p>
-      ):(<List list={dropedDict} />)}
+      ):(<List list={dict.data} />)}*/}
     </>
   );
 };
