@@ -1,10 +1,12 @@
 import * as React from 'react';
 
 function List({list, onRemoveDef}){
-  return (
+  if(list[0] === undefined){
+    return ;
+  } else return (
     <article>
       {list.map((word) =>{
-        return <Word key={word.license.name} info={word} onRemoveDef={onRemoveDef} />
+        return <Word key={`${word.word}${list.indexOf(word)}`} info={word} onRemoveDef={onRemoveDef} />
         }
       )}
     </article>
@@ -143,7 +145,7 @@ const dictReducer = (state, action) =>{
 
 function App() {
 
-    const [searchTerm, setSearchTerm] = useStorageState('search', '');
+    const [searchTerm, setSearchTerm] = useStorageState('search', 'example');
     //const [dropTerm, setDropTerm] =useStorageState('drop', '');
     const [dict, dispatchDict] =  React.useReducer(
       dictReducer,
@@ -151,9 +153,10 @@ function App() {
     );
 
     React.useEffect(() =>{
+      if (!searchTerm) return;
       dispatchDict({type:'LOADING_DICT'})
 
-      fetch(`${API_ENDPOINT}example`).then((response) =>
+      fetch(`${API_ENDPOINT}${searchTerm}`).then((response) =>
         response.json()).then((result) =>{
           dispatchDict({
             type: 'GET_DICT',
@@ -162,7 +165,8 @@ function App() {
         }).catch(()=>
       dispatchDict({type:'ERROR_FETCH'})
       );
-    }, []);
+    console.log(dict.data)
+    }, [searchTerm]);
     
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
