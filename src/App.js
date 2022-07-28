@@ -152,7 +152,7 @@ function App() {
       {data: [], isLoading: false, isError: false}
     );
 
-    React.useEffect(() =>{
+    const handleFetchStories = React.useCallback(()=>{
       if (!searchTerm) return;
       dispatchDict({type:'LOADING_DICT'})
 
@@ -163,10 +163,13 @@ function App() {
             payload: dict.data = result,
           })
         }).catch(()=>
-      dispatchDict({type:'ERROR_FETCH'})
-      );
-    console.log(dict.data)
-    }, [searchTerm]);
+            dispatchDict({type:'ERROR_FETCH'})
+          );
+    }, [searchTerm])
+
+    React.useEffect(() =>{
+      handleFetchStories()
+    }, [handleFetchStories]);
     
     const handleSearch = (event) =>{
       setSearchTerm(event.target.value);
@@ -189,9 +192,9 @@ function App() {
   return (
     <>
       <h1>Welcome to the dictionary</h1>
-      <p>Just 3 defenition avaible now but more will come in the future.</p>
+      <p>Type the word you want a definition in the searchbar section.</p>
 
-      <h2>Navigate with the searchbar</h2>
+      <h2>Searchbar</h2>
       <InputWithLabel
         isFocused
         id="search"
